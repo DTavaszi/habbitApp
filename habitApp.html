@@ -30,7 +30,7 @@
 		
 		function promptQuestion(something)
 		{
-			var sentence=prompt("Please enter" + something,"Programming");
+			var sentence=prompt("Please enter " + something,"Programming");
 			/*while (sentence.length < 20)
 			{
 				sentence+= " ";
@@ -44,27 +44,58 @@
 		$(function() {
 		
 	  });
-		function createButton(func){			
+		function createButton(habit, func){			
 			var button = document.createElement("input");
 			button.type = "button";
-			button.value = promptQuestion("value");
 			button.style.textAlign="justify";
+			button.value = habit.name;
 			button.style.width="200px";
 			button.onclick = func;
 			document.getElementById('buttonField').appendChild(button);
 			
-			var button = document.createElement("input");
+			var plusButton = document.createElement("input");
+			plusButton.type = "button";
+			plusButton.value = "+";			
+			
+			document.getElementById('buttonField').appendChild(plusButton);
+			$('#buttonField').append($('<p/>'));
+			
+			
+			button = document.createElement("input");
 			button.type = "button";
-			button.value = "+";
+			button.style.textAlign="center";
+			button.style.width="200px";
 			button.onclick = func;
 			document.getElementById('buttonField').appendChild(button);
 			$('#buttonField').append($('<p/>'));
+			
+			plusButton.onclick = function () 
+								{ 									
+									return (function (button)
+										{
+											button.value = habit.counter();											
+										})(button)
+								};
 			}
-		
+
+		function newHabit(habits) {
+			var hName = promptQuestion("name");
+			var hTarget = promptQuestion("target");
+			var counter = (function () { var value = 0;
+				return function () 
+					{ return value++ 
+				} 
+			})();
+
+			habits.push({name : hName, counter : counter, target : hTarget});
+			
+			createButton(habits[habits.length-1]);
+			
+		}
 		window.onload = function(){
-			var myHabits;
-			// {habit : habit, curr : curr, target : target}
-			document.getElementById('addHabits').onclick = function () { return createButton() };
+			var myHabits = [];
+			// {name : habit, curr : curr, target : target}
+			document.getElementById('addHabits').onclick = function () { return newHabit(myHabits) };
 			
 			$("#progressbar").progressbar({
 			  value: 37
