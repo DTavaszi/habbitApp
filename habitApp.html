@@ -31,13 +31,10 @@
 		function promptQuestion(something)
 		{
 			var sentence=prompt("Please enter " + something,"Programming");
-			/*while (sentence.length < 20)
-			{
-				sentence+= " ";
-			}*/
+
 			if (sentence!=null && sentence!="")
 			{
-				return "Start " + sentence;
+				return sentence;
 			}
 			return "Generic";
 		}
@@ -45,49 +42,54 @@
 		
 	  });
 		function createButton(habit, func){			
-			var button = document.createElement("input");
-			button.type = "button";
-			button.style.textAlign="justify";
-			button.value = habit.name;
-			button.style.width="200px";
-			button.onclick = func;
-			document.getElementById('buttonField').appendChild(button);
+			var habbitButton = document.createElement("input");
+			habbitButton.type = "button";
+			habbitButton.style.textAlign="justify";
+			habbitButton.value = habit.name;
+			habbitButton.style.width="200px";
+			habbitButton.onclick = func;
+			document.getElementById('buttonField').appendChild(habbitButton);
 			
 			var plusButton = document.createElement("input");
 			plusButton.type = "button";
 			plusButton.value = "+";			
 			
 			document.getElementById('buttonField').appendChild(plusButton);
-			$('#buttonField').append($('<p/>'));
+			$('#buttonField').append($('<br/>'));
 			
 			
-			button = document.createElement("input");
-			button.type = "button";
-			button.style.textAlign="center";
-			button.style.width="200px";
-			button.onclick = func;
-			document.getElementById('buttonField').appendChild(button);
+			var counterButton = document.createElement("input");
+			counterButton.type = "button";
+			counterButton.style.textAlign="center";
+			counterButton.style.width="200px";
+			counterButton.onclick = func;
+			document.getElementById('buttonField').appendChild(counterButton);
 			$('#buttonField').append($('<p/>'));
+			$('#buttonField').append($('<hr>'));
 			
 			plusButton.onclick = function () 
 								{ 									
 									return (function (button)
 										{
-											button.value = habit.counter();											
-										})(button)
+											if(habit.counter < habit.target)
+											{
+												habit.counter++;
+												button.value = habit.counter;
+											}											
+										})(counterButton)
 								};
 			}
 
 		function newHabit(habits) {
 			var hName = promptQuestion("name");
 			var hTarget = promptQuestion("target");
-			var counter = (function () { var value = 0;
+			/*var counter = (function () { var value = 0;
 				return function () 
 					{ return value++ 
 				} 
-			})();
+			})();*/
 
-			habits.push({name : hName, counter : counter, target : hTarget});
+			habits.push({name : hName, counter : 0, target : hTarget});
 			
 			createButton(habits[habits.length-1]);
 			
