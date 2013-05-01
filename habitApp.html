@@ -2,32 +2,53 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>HabitApp, it's punny.</title>
+        <title>HabitApp, it's... not punny.</title>
+
         <link href="css/style.css" rel="stylesheet">
 		<link href="css/bootstrap.css" rel="stylesheet">
-    </head>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"/>
+
+	</head>
     <body>
 		<div class="container">
-		
-		
-		<div  class="hero-unit">
-        <h1>Hello, world!</h1>
-        <p>Here's some text you can read.</p>
-		<button id="addHabits">Action sequence!</button>
-		<p>
-		<div id="progressbar"></div>
-		<div id="buttonField" class="hero-unit">
+			<div  class="hero-unit">
+				<h1>Hello, world!</h1>
+				<p>Here's some text you can read.</p>
+				<button id="addHabits">Action sequence!</button>
+				<p>
+				<div id="progressbar"></div>
+				<div id="buttonField" class="hero-unit">
+			</div>
+			</div>
 		</div>
-	  </div>
-		
+
+		<!--This is the dialog for creating habits-->
+		<div id="dialog-form" title="Create new user">
+		  <p class="validateTips">All form fields are required.</p>		 
+		  <form>
+		  <fieldset>
+			<label for="habit">Habit</label>
+			<input type="text" name="habit" id="habit" class="text ui-widget-content ui-corner-all" />
+			<label for="target">Target</label>
+			<input type="text" name="target" id="target" class="text ui-widget-content ui-corner-all" />
+		  </fieldset>
+		  </form>
 		</div>
+
     </body>
-	<script src="js/jquery-1.9.1.js"></script>
+	
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 	<script type="text/javascript">
+		//Tidbits
+		//bValid = bValid && checkRegexp( target, /^([0-9_])+$/i, "Target ma consist of 0-9." );
+				  // From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+				  //bValid = bValid && checkRegexp( target, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );		
+		/*Dates
 		var someDate = new Date();
 		someDate.setDate(someDate.getDate());
-		//alert(someDate.getDay());
-		
+		alert(someDate.getDay());
+		*/
 		function promptQuestion(something)
 		{
 			var sentence=prompt("Please enter " + something,"Programming");
@@ -37,11 +58,10 @@
 				return sentence;
 			}
 			return "Generic";
-		}
-		$(function() {
-		
-	  });
-		function createButton(habit, func){			
+		}	 
+
+		function createButton(habit, func)
+		{			
 			var habbitButton = document.createElement("input");
 			habbitButton.type = "button";
 			habbitButton.style.textAlign="justify";
@@ -55,8 +75,7 @@
 			plusButton.value = "+";			
 			
 			document.getElementById('buttonField').appendChild(plusButton);
-			$('#buttonField').append($('<br/>'));
-			
+			$('#buttonField').append($('<br/>'));			
 			
 			var counterButton = document.createElement("input");
 			counterButton.type = "button";
@@ -81,29 +100,92 @@
 			}
 
 		function newHabit(habits) {
-			var hName = promptQuestion("name");
+			$( "#dialog-form" ).dialog( "open" );
+			/*var hName = promptQuestion("name");
 			var hTarget = promptQuestion("target");
-			/*var counter = (function () { var value = 0;
-				return function () 
-					{ return value++ 
-				} 
-			})();*/
+
 
 			habits.push({name : hName, counter : 0, target : hTarget});
 			
-			createButton(habits[habits.length-1]);
+			createButton(habits[habits.length-1]);*/
 			
 		}
+		
 		window.onload = function(){
 			var myHabits = [];
-			// {name : habit, curr : curr, target : target}
-			document.getElementById('addHabits').onclick = function () { return newHabit(myHabits) };
+			// {name : hgabit, curr : curr, target : target}
+			//document.getElementById('addHabits').onclick = function () { return newHabit(myHabits) };			
+			//document.getElementById('addHabits').onclick = function () { return testButton() };
+			document.getElementById('addHabits').onclick = function () { return $( "#dialog-form" ).dialog( "open" ) };
 			
-			$("#progressbar").progressbar({
-			  value: 37
+			//Define form
+			var habit = $( "#habit" ), //Variables for the Create Habbit dialog
+			  target = $( "#target" ),
+			  allFields = $( [] ).add( habit ).add( target ),
+			  tips = $( ".validateTips" );
+			  
+			$( "#dialog-form" ).dialog({
+			  autoOpen: false,
+			  height: 400,
+			  width: 350,
+			  modal: true,
+			  buttons: {
+				"Create an account": function() {
+				
+				  var bValid = true;
+				  
+				  allFields.removeClass( "ui-state-error" );
+				  bValid = bValid && checkLength( habit, "habit", 3, 16 );
+				  bValid = bValid && checkLength( target, "target", 1, 2 );
+		 
+				  bValid = bValid && checkRegexp( habit, /^[a-z]([0-9a-z_])+$/i, "Habit may consist of a-z, 0-9, underscores, begin with a letter." );
+				 
+				  if ( bValid ) {
+					myHabits.push({name : habit.val(), counter : 0, target : target.val()});
+					createButton(myHabits[myHabits.length-1], null);
+					$( this ).dialog( "close" );
+				  }
+				},
+				Cancel: function() {
+				  $( this ).dialog( "close" );					
+				}
+			  },
+			  close: function() {
+				allFields.val( "" ).removeClass( "ui-state-error" );
+			  }
 			});
 		}
 		
-		
-	</script>
+		//***************
+		//$(function() {
+    
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    } 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    } 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    } 
+</script>
 </html>
