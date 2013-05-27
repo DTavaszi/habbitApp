@@ -1,3 +1,22 @@
 .container {
 	margin:10px auto;
 }
+
+body {
+	color:#EAEAEA;
+	background:#7EB5D6;
+	
+	margin:0px;
+	padding:0px;
+	font-family: "Trebuchet MS", Tahoma, Arial;
+	font-size: 12px;
+	}
+	
+.button-field
+{
+display:inline;
+width: 20%;
+float:right;
+margin-left: 0px;	
+margin-right: 0px;
+}

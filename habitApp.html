@@ -8,7 +8,7 @@
 		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"/>
 <style type="text/css">
-.drag {border: 1px solid black; position: relative; cursor: move; width: 225px;}
+.drag {background:#6666FF;border: 1px solid black; position: relative; cursor: move; width: 230px;}
 	</style>
 	</head>
     <body>
@@ -17,7 +17,7 @@
 			<div  class="hero-unit">
 
 				<button id="addHabits">Add habit</button>
-				<div id="buttonField" class="hero-unit">
+				<div id="buttonField" class="button-field">
 			</div>
 			</div>
 		</div>
@@ -30,11 +30,13 @@
 			<label for="habit">Name your habit:</label>
 			<input type="text" name="habit" id="habit" class="text ui-widget-content ui-corner-all" />
 			<label for="target"></label>
-			<label for="target">Goal</label>
+			<label for="target">Target goal:</label>
+			<input type="text" name="target" id="target" class="text ui-widget-content ui-corner-all" />	
+			<br/>
 			<input type="checkbox" name="chkWeek" id="chkWeek"> Per Week
 			<input type="checkbox" name="chkDay" id="chkDay"> Per day
-			<label for="target"></label>
-			<input type="text" name="target" id="target" class="text ui-widget-content ui-corner-all" />
+			
+			
 			
 		  </fieldset>
 		  </form>
@@ -93,7 +95,7 @@
 			counterButton.onclick = func;
 			document.getElementById(bfield).appendChild(counterButton);
 			$('#' + bfield).append($('<p/>'));
-			$('#' + bfield).append($('<hr>'));
+			//$('#' + bfield).append($('<hr>'));
 			
 			plusButton.onclick = function () 
 								{ 									
