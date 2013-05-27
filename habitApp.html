@@ -7,13 +7,15 @@
         <link href="css/style.css" rel="stylesheet">
 		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"/>
-
+<style type="text/css">
+.drag {border: 1px solid black; position: relative; cursor: move; width: 225px;}
+	</style>
 	</head>
     <body>
+<pre id="debug"> </pre>
 		<div class="container">
 			<div  class="hero-unit">
-				<h1>Hello, world!</h1>
-				<p>Here's some text you can read.</p>
+
 				<button id="addHabits">Add habit</button>
 				<div id="buttonField" class="hero-unit">
 			</div>
@@ -52,6 +54,8 @@
 		someDate.setDate(someDate.getDate());
 		alert(someDate.getDay());
 		*/
+		
+		
 		function promptQuestion(something)
 		{
 			var sentence=prompt("Please enter " + something,"Programming");
@@ -63,31 +67,33 @@
 			return "Generic";
 		}	 
 
-		function createButton(habit, func)
+		function createButton(habit, habitCount, func)
 		{			
+			var bfield = 'bfield' + habitCount;
+			$('#buttonField').append($('<div id=' + bfield + ' class="drag">'));
 			var habbitButton = document.createElement("input");
 			habbitButton.type = "button";
 			habbitButton.style.textAlign="justify";
 			habbitButton.value = habit.name;
 			habbitButton.style.width="200px";
 			habbitButton.onclick = func;
-			document.getElementById('buttonField').appendChild(habbitButton);
+			document.getElementById(bfield).appendChild(habbitButton);
 			
 			var plusButton = document.createElement("input");
 			plusButton.type = "button";
 			plusButton.value = "+";			
 			
-			document.getElementById('buttonField').appendChild(plusButton);
-			$('#buttonField').append($('<br/>'));			
+			document.getElementById(bfield).appendChild(plusButton);
+			$('#' + bfield).append($('<br/>'));			
 			
 			var counterButton = document.createElement("input");
 			counterButton.type = "button";
 			counterButton.style.textAlign="center";
 			counterButton.style.width="200px";
 			counterButton.onclick = func;
-			document.getElementById('buttonField').appendChild(counterButton);
-			$('#buttonField').append($('<p/>'));
-			$('#buttonField').append($('<hr>'));
+			document.getElementById(bfield).appendChild(counterButton);
+			$('#' + bfield).append($('<p/>'));
+			$('#' + bfield).append($('<hr>'));
 			
 			plusButton.onclick = function () 
 								{ 									
@@ -99,6 +105,7 @@
 												button.value = habit.counter;
 											}											
 										})(counterButton)
+							
 								};
 			}
 
@@ -152,7 +159,7 @@
 				  if ( bValid ) {
 					var pWeek = document.getElementById("chkWeek").checked;
 					myHabits.push({name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek });					
-					createButton(myHabits[myHabits.length-1], null);
+					createButton(myHabits[myHabits.length-1], myHabits.length, null);
 					$( this ).dialog( "close" );
 				  }
 				},
@@ -164,12 +171,102 @@
 				allFields.val( "" ).removeClass( "ui-state-error" );
 			  }
 			});
+			
+			//Drag and Drop			
+			document.onmousedown = OnMouseDown;
+			document.onmouseup = OnMouseUp;
 		}
 		
-		//***************
-		//$(function() {
-    
- 
+	//Drag and Drop global variables
+			var _startX = 0;			// mouse starting positions
+			var _startY = 0;
+			var _offsetX = 0;			// current element offset
+			var _offsetY = 0;
+			var _dragElement;			// needs to be passed from OnMouseDown to OnMouseMove
+			var _oldZIndex = 0;			// we temporarily increase the z-index during drag
+			var _debug = document.getElementById('debug');	// makes life easier
+			
+	function OnMouseDown(e)
+	{
+		// IE is retarded and doesn't pass the event object
+		if (e == null) 
+			e = window.event; 
+		
+		// IE uses srcElement, others use target
+		var target = e.target != null ? e.target : e.srcElement;
+		
+		_debug.innerHTML = target.className == 'drag' 
+			? 'draggable element clicked' 
+			: 'NON-draggable element clicked';
+
+		// for IE, left click == 1
+		// for Firefox, left click == 0
+		if ((e.button == 1 && window.event != null || 
+			e.button == 0) && 
+			target.className == 'drag')
+		{
+			// grab the mouse position
+			_startX = e.clientX;
+			_startY = e.clientY;
+			
+			// grab the clicked element's position
+			_offsetX = ExtractNumber(target.style.left);
+			_offsetY = ExtractNumber(target.style.top);
+			
+			// bring the clicked element to the front while it is being dragged
+			_oldZIndex = target.style.zIndex;
+			target.style.zIndex = 10000;
+			
+			// we need to access the element in OnMouseMove
+			_dragElement = target;
+
+			// tell our code to start moving the element with the mouse
+			document.onmousemove = function (e) {
+										if (e == null) 
+											var e = window.event; 
+										
+										// this is the actual "drag code"
+										target.style.left = (_offsetX + e.clientX - _startX) + 'px';
+										target.style.top = (_offsetY + e.clientY - _startY) + 'px';
+										
+										_debug.innerHTML = '(' + target.style.left + ', ' + target.style.top + ')';	
+									};
+			
+			// cancel out any text selections
+			document.body.focus();
+			
+			// prevent text selection in IE
+			document.onselectstart = function () { return false; };
+			// prevent IE from trying to drag an image
+			target.ondragstart = function() { return false; };
+			
+			// prevent text selection (except IE)
+			return false;
+		}
+	}
+	function ExtractNumber(value)
+	{
+		var n = parseInt(value);
+		
+		return n == null || isNaN(n) ? 0 : n;
+	}
+	function OnMouseUp(e)
+	{
+		if (_dragElement != null)
+		{
+			_dragElement.style.zIndex = _oldZIndex;
+
+			// we're done with these events until the next OnMouseDown
+			document.onmousemove = null;
+			document.onselectstart = null;
+			_dragElement.ondragstart = null;
+
+			// this is how we know we're not dragging
+			_dragElement = null;
+			
+			_debug.innerHTML = 'mouse up';
+		}
+	}
     function updateTips( t ) {
       tips
         .text( t )
