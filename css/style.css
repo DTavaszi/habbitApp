@@ -30,16 +30,31 @@ body {
 	margin-left: 0px;	
 	margin-right: 0px;
 }
-.day:hover {
+/*.day:hover {
 	background:#177CE2;
+}*/
+
+
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
 }
+
 .drag {
 	background:#177CE2;
 	border: 1px solid black; 
 	position: relative; 
-	cursor: move; 
+	cursor: move;
 	width: 130px;
 	}
+.drag.over {
+  border: 2px dashed #000;
+}
 .container {
 	background:#AAAAAA;	
 	margin:10px auto;

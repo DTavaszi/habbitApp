@@ -1,7 +1,10 @@
-<div id="columns">
-  <div class="column" draggable="true"><header>A</header></div>
+<div id="columns">	
+  <div class="column" draggable="true"><header>A</header><button id="addHabits">Add habit</button></div>
   <div class="column" draggable="true"><header>B</header></div>
   <div class="column" draggable="true"><header>C</header></div>
+  <div class="column" draggable="true"><header>D</header></div>
+ </div>
+
 </div>
 
 <style>
@@ -32,6 +35,8 @@
   text-align: center;
   cursor: move;
 }
+
+
 .column header {
   color: #fff;
   text-shadow: #000 0 1px;
@@ -57,6 +62,51 @@
 .column.over {
   border: 2px dashed #000;
 }
+
+.empty {
+  height: 150px;
+  width: 150px;
+  float: left;
+  border: 2px solid #666666;
+  background-color: #ccc;
+  margin-right: 5px;
+  -webkit-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 3px #000;
+  -ms-box-shadow: inset 0 0 3px #000;
+  box-shadow: inset 0 0 3px #000;
+  text-align: center;
+  cursor: move;
+}
+
+
+.empty header {
+  color: #fff;
+  text-shadow: #000 0 1px;
+  box-shadow: 5px;
+  padding: 5px;
+  background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  background: -webkit-gradient(linear, left top, right top,
+                               color-stop(0, rgb(0,0,0)),
+                               color-stop(0.50, rgb(79,79,79)),
+                               color-stop(1, rgb(21,21,21)));
+  background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  border-bottom: 1px solid #ddd;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -ms-border-radius-topleft: 10px;
+  border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -ms-border-top-right-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  border-top-right-radius: 10px;
+}
+.empty.over {
+  border: 2px dashed #000;
+}
 </style>
 <script>
 function handleDragOver(e) {
@@ -71,7 +121,8 @@ function handleDragOver(e) {
 
 function handleDragEnter(e) {
   // this / e.target is the current hover target.
-  this.classList.add('over');
+	this.classList.add('over');
+
 }
 
 function handleDragLeave(e) {
@@ -97,6 +148,7 @@ function handleDragStart(e) {
 
   e.dataTransfer.effectAllowed = 'move';
   e.dataTransfer.setData('text/html', this.innerHTML);
+  dropSrcEl = this.innerHTML;
 }
 
 function handleDrop(e) {
@@ -111,8 +163,9 @@ function handleDrop(e) {
     // Set the source column's HTML to the HTML of the column we dropped on.
     dragSrcEl.innerHTML = this.innerHTML;
     this.innerHTML = e.dataTransfer.getData('text/html');
+	this.innerHTML = dropSrcEl;
+	 dragSrcEl = null;
   }
-
   return false;
 }
 
@@ -125,5 +178,6 @@ var cols = document.querySelectorAll('#columns .column');
   col.addEventListener('drop', handleDrop, false);
   col.addEventListener('dragend', handleDragEnd, false);
 });
+
 
 </script>

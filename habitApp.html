@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>HabitApp</title>
-
+ 
         <link href="css/style.css" rel="stylesheet">
 		<link href="css/bootstrap.css" rel="stylesheet">
 		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css"/>
@@ -15,7 +15,7 @@
 <pre id="debug"> </pre>
 		<div class="container">
 			<div  class="hero-unit">
-				<button id="addHabits">Add habit</button>				
+				<button id="addHabits">Add habit</button>			
 			</div>
 		</div>
 		<div id="buttonField" class="button-field"></div>
@@ -65,6 +65,72 @@
 		*/
 		
 		
+		//DNDHTML5
+		var dragSrcEl = null;
+		function handleDragOver(e) {
+		  if (e.preventDefault) {
+			e.preventDefault(); // Necessary. Allows us to drop.
+		  }
+
+		  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+		  return false;
+		}
+
+		function handleDragEnter(e) {
+		  // this / e.target is the current hover target.
+			this.classList.add('over');
+
+		}
+
+		function handleDragLeave(e) {
+		  this.classList.remove('over');  // this / e.target is previous target element.
+		}
+
+		function handleDragEnd(e) {
+		  // this/e.target is the source node.
+			this.style.opacity = "1.0";
+		  [].forEach.call(cols, function (col) {
+			col.classList.remove('over');
+		  });
+		}
+
+
+		var dragSrcEl = null;
+		var dropSrcEl = null;
+
+		function handleDragStart(e) {
+		  // Target (this) element is the source node.
+		  this.style.opacity = '0.4';
+
+		  dragSrcEl = this;
+
+		  e.dataTransfer.effectAllowed = 'move';
+		  e.dataTransfer.setData('text/html', this.innerHTML);
+		  dropSrcEl = this.innerHTML;
+		}
+
+		function handleDrop(e) {
+		  // this/e.target is current target element.
+
+		  if (e.stopPropagation) {
+			e.stopPropagation(); // Stops some browsers from redirecting.
+		  }
+
+		  // Don't do anything if dropping the same column we're dragging.
+		  if (dragSrcEl != this) {
+			// Set the source column's HTML to the HTML of the column we dropped on.
+			dragSrcEl.innerHTML = this.innerHTML;
+
+			this.innerHTML = e.dataTransfer.getData('text/html');
+			this.innerHTML = dropSrcEl;
+			 dragSrcEl = null;
+		  }
+		  return false;
+		}
+
+//DNDHTML5
+		
 		function promptQuestion(something)
 		{
 			var sentence=prompt("Please enter " + something,"Programming");
@@ -79,7 +145,7 @@
 		function createButton(habit, habitCount, func)
 		{			
 			var bfield = 'bfield' + habitCount;
-			$('#buttonField').append($('<div id=' + bfield + ' class="drag">'));
+			$('#buttonField').append($('<div id=' + bfield + ' class="drag" draggable="true">'));
 			var habbitButton = document.createElement("input");
 			habbitButton.type = "button";
 			habbitButton.style.textAlign="justify";
@@ -102,7 +168,6 @@
 			counterButton.onclick = func;
 			document.getElementById(bfield).appendChild(counterButton);
 			$('#' + bfield).append($('<p/>'));
-			//$('#' + bfield).append($('<hr>'));
 			
 			plusButton.onclick = function () 
 								{ 									
@@ -116,6 +181,20 @@
 										})(counterButton)
 							
 								};
+								
+			//var habs = document.querySelectorAll('#' + bfield + ' .drag');
+			var hab = document.getElementById(bfield);
+			
+			//[].forEach.call(habs, function(hab) {
+			  
+			  hab.addEventListener('dragstart', handleDragStart, false);
+			  hab.addEventListener('dragenter', handleDragEnter, false);
+			  hab.addEventListener('dragover', handleDragOver, false);
+			  hab.addEventListener('dragleave', handleDragLeave, false);
+			  hab.addEventListener('drop', handleDrop, false);
+			  hab.addEventListener('dragend', handleDragEnd, false);
+			//});
+			
 			}
 
 		function newHabit(habits) {
@@ -195,7 +274,7 @@
 			var _oldZIndex = 0;			// we temporarily increase the z-index during drag
 			var _debug = document.getElementById('debug');	// makes life easier
 			
-	function OnMouseDown(e)
+	/*function OnMouseDown(e)
 	{
 		// IE is retarded and doesn't pass the event object
 		if (e == null) 
@@ -280,7 +359,7 @@
 			
 			_debug.innerHTML = 'mouse up';
 		}
-	}
+	}*/
     function updateTips( t ) {
       tips
         .text( t )
