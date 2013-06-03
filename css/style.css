@@ -6,29 +6,60 @@ body {
 	font-family: "Trebuchet MS", Tahoma, Arial;
 	font-size: 12px;
 	}
-.button-field {
-	background:#AAAAAA;	
+.button-field {=
 	display:inline;
 	width: 10%;
 	float:right;
 	margin-left: 0px;	
 	margin-right: 0px;
 	}
-.schedule {
-	background:#444444;	
-	width: 90%;
-	height: 600px;
-	float:left;
-	margin-left: 0px;	
-	margin-right: 0px;
-	}
+
 .day {
 	background:#777777;	
-	width: 14%;
-	height: 600px;
+	width: 12.75%;
+	height: 550px;
 	float:left;
 	margin-left: 0px;	
 	margin-right: 0px;
+
+	border: .5px solid #666666;
+	background-color: #ccc;
+	-webkit-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 3px #000;
+	-ms-box-shadow: inset 0 0 3px #000;
+	box-shadow: inset 0 0 3px #000;
+	text-align: center;
+	cursor: move;
+}
+.day.over {
+  border: 2px dashed #000;
+}
+
+.day header {
+  color: #fff;
+  text-shadow: #000 0 1px;
+  text-align:center;
+  box-shadow: 5px;
+  padding: 5px;
+  background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  background: -webkit-gradient(linear, left top, right top,
+                               color-stop(0, rgb(0,0,0)),
+                               color-stop(0.50, rgb(79,79,79)),
+                               color-stop(1, rgb(21,21,21)));
+  background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  border-bottom: 1px solid #ddd;
+  -webkit-border-top-left-radius: 10px;
+  -moz-border-radius-topleft: 10px;
+  -ms-border-radius-topleft: 10px;
+  border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+  -ms-border-top-right-radius: 10px;
+  -moz-border-radius-topright: 10px;
+  border-top-right-radius: 10px;
 }
 /*.day:hover {
 	background:#177CE2;
@@ -46,11 +77,23 @@ body {
 }
 
 .drag {
-	background:#177CE2;
+	/*background:#177CE2;*/
 	border: 1px solid black; 
 	position: relative; 
 	cursor: move;
 	width: 130px;
+	
+	border: .5px solid #666666;
+	background-color: #ccc;
+	-webkit-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 3px #000;
+	-ms-box-shadow: inset 0 0 3px #000;
+	box-shadow: inset 0 0 3px #000;
+	text-align: center;
+	cursor: move;
 	}
 .drag.over {
   border: 2px dashed #000;

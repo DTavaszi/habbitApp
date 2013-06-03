@@ -1,0 +1,122 @@
+		//Tidbits
+		//bValid = bValid && checkRegexp( target, /^([0-9_])+$/i, "Target may consist of 0-9." );
+				  // From jquery.validate.js (by joern), contributed by Scott Gonzalez: http://projects.scottsplayground.com/email_address_validation/
+				  //bValid = bValid && checkRegexp( target, /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i, "eg. ui@jquery.com" );		
+		/*Dates
+		var someDate = new Date();
+		someDate.setDate(someDate.getDate());
+		alert(someDate.getDay());
+		*/
+
+
+		function promptQuestion(something)
+		{
+			var sentence=prompt("Please enter " + something,"Programming");
+
+			if (sentence!=null && sentence!="")
+			{
+				return sentence;
+			}
+			return "Generic";
+		}	 
+
+			/*Drag and Drop			
+			document.onmousedown = OnMouseDown;
+			document.onmouseup = OnMouseUp;*/
+
+	/*
+	//Drag and Drop global variables
+			var _startX = 0;			// mouse starting positions
+			var _startY = 0;
+			var _offsetX = 0;			// current element offset
+			var _offsetY = 0;
+			var _dragElement;			// needs to be passed from OnMouseDown to OnMouseMove
+			var _oldZIndex = 0;			// we temporarily increase the z-index during drag
+			var _debug = document.getElementById('debug');	// makes life easier*/
+			
+	/*function OnMouseDown(e)
+	{
+		// IE is retarded and doesn't pass the event object
+		if (e == null) 
+			e = window.event; 
+		
+		// IE uses srcElement, others use target
+		var target = e.target != null ? e.target : e.srcElement;
+		
+		_debug.innerHTML = target.className == 'drag' 
+			? 'draggable element clicked' 
+			: 'NON-draggable element clicked';
+
+		// for IE, left click == 1
+		// for Firefox, left click == 0
+		if ((e.button == 1 && window.event != null || 
+			e.button == 0) && 
+			target.className == 'drag')
+		{
+			// grab the mouse position
+			_startX = e.clientX;
+			_startY = e.clientY;
+			_oldX = _startX;
+			_oldY = _startY;
+			// grab the clicked element's position
+			_offsetX = ExtractNumber(target.style.left);
+			_offsetY = ExtractNumber(target.style.top);
+			
+			// bring the clicked element to the front while it is being dragged
+			_oldZIndex = target.style.zIndex;
+			target.style.zIndex = 10000;
+			
+			// we need to access the element in OnMouseMove
+			_dragElement = target;
+
+			// tell our code to start moving the element with the mouse
+			document.onmousemove = function (e) {
+										if (e == null) 
+											var e = window.event; 
+										
+										// this is the actual "drag code"
+										target.style.left = (_offsetX + e.clientX - _startX) + 'px';
+										target.style.top = (_offsetY + e.clientY - _startY) + 'px';
+										
+										_debug.innerHTML = '(' + target.style.left + ', ' + target.style.top + ')';	
+									};
+			
+			// cancel out any text selections
+			document.body.focus();
+			
+			// prevent text selection in IE
+			document.onselectstart = function () { return false; };
+			// prevent IE from trying to drag an image
+			target.ondragstart = function() { return false; };
+			
+			// prevent text selection (except IE)
+			return false;
+		}
+	}
+	function ExtractNumber(value)
+	{
+		var n = parseInt(value);
+		
+		return n == null || isNaN(n) ? 0 : n;
+	}
+	function OnMouseUp(e)
+	{
+		if (_dragElement != null)
+		{
+			_dragElement.style.zIndex = _oldZIndex;
+			
+			//Moves the box back unless it's dropped on a day
+			_dragElement.style.left = 0 + 'px';
+			_dragElement.style.top = 0 + 'px';
+			
+			// we're done with these events until the next OnMouseDown
+			document.onmousemove = null;
+			document.onselectstart = null;
+			_dragElement.ondragstart = null;
+
+			// this is how we know we're not dragging
+			_dragElement = null;
+			
+			_debug.innerHTML = 'mouse up';
+		}
+	}*/
