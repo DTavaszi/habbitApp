@@ -11,24 +11,18 @@
 	</style>
 	</head>
     <body>
+	
 <pre id="debug"> </pre>
 		<div class="container">
 			<div  class="hero-unit">
-				<button id="addHabits">Add habit</button>			
+				<button id="addHabits">Add habit</button>	
+				<button id="redrawHabits">Redraw habits</button>				
 			</div>
 			
 		</div>
 		<div id="buttonField" class="button-field"></div>
 
-		<div id="Schedule">
-		<div id="Monday" class="day"><header>Monday</header></div>
-		<div id="Tuesday" class="day"><header>Tuesday</header></div>
-		<div id="Wednesday" class="day"><header>Wednesday</header></div>
-		<div id="Thursday" class="day"><header>Thursday</header></div>
-		<div id="Friday" class="day"><header>Friday</header></div>
-		<div id="Saturday" class="day"><header>Saturday</header></div>
-		<div id="Sunday" class="day"><header>Sunday</header></div>
-		</div>
+		<div id="Schedule"/>
 
 		<!--This is the dialog for creating habits-->
 		<div id="dialog-form" title="Form a habit">
@@ -41,6 +35,17 @@
 			<label for="target">Target goal:</label>
 			<input type="text" name="target" id="target" class="text ui-widget-content ui-corner-all" />	
 			<br/>
+			
+			<select id="selectDay">
+			  <option value="0">Monday</option>
+			  <option value="1">Tuesday</option>
+			  <option value="2">Wednesday</option>
+			  <option value="3">Thursday</option>
+			  <option value="4">Friday</option>
+			  <option value="5">Saturday</option>
+			  <option value="6">Sunday</option>
+			</select>	
+			
 			<input type="checkbox" name="chkWeek" id="chkWeek"> Per Week
 			<input type="checkbox" name="chkDay" id="chkDay"> Per day
 			
@@ -52,6 +57,9 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 	<script type="text/javascript">		
+		
+		//Separate counter value from habit. Need a new habit list for each unique habit instance.
+		
 		//DNDHTML5
 		var dragSrcEl = null;
 		function handleDragOver(e) {
@@ -67,7 +75,6 @@
 		function handleDragEnter(e) {
 		  // this / e.target is the current hover target.
 			this.classList.add('over');
-
 		}
 
 		function handleDragLeave(e) {
@@ -117,74 +124,139 @@
 		
 		//{name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek }
 		//{name, target, pDayWeek, currTarget, daysOfWeek, progress}		
-		function addHabitToDay(habit, day)
-		{
-			habit.daysOfWeek.day = 1;
-		}
+
 //DNDHTML5
-		function createHabit(habit, habitCount, func)
-		{			
-			var bfield = 'bfield' + habitCount;
-			$('#buttonField').append($('<div id=' + bfield + ' class="drag" draggable="true">'));
+		function createInstance(habit, habitDay, habitInstances)
+		{
 			
-			var habitButton = document.createElement("input");
-			habitButton.type = "button";
-			habitButton.style.textAlign="justify";
-			habitButton.value = habit.name;
-			habitButton.style.width="100px";
-			habitButton.onclick = func;
+		}
+		
+		function createHabit(habit, day, habitNumber, habitInstances)
+		{			
+			var bfield = 'bfield' + habitNumber;
+			$('#' + day).append($('<div id=' + bfield + ' class="drag" draggable="true">'));
+			
+			var habitButton = document.createElement("label");
+			//habitButton.type = "label";
+			habitButton.style.textAlign="left";
+			habitButton.innerHTML = habit.name;
+			habitButton.style.width="100px";			
 			document.getElementById(bfield).appendChild(habitButton);
 			
 			var plusButton = document.createElement("input");
 			plusButton.type = "button";
-			plusButton.value = "+";			
+			plusButton.value = "+";	
+			plusButton.onclick = function () 
+											{ 									
+												return (function (button)
+													{
+														if(habit.currTarget < habit.target)
+														{
+															habit.currTarget++;
+															button.value = habit.currTarget;
+														}											
+													})(counterButton)							
+											};										
 			
 			document.getElementById(bfield).appendChild(plusButton);
-			$('#' + bfield).append($('<br/>'));			
+			$('#' + bfield).append($('<br/>'));
 			
+			//CounterButton
 			var counterButton = document.createElement("input");
 			counterButton.type = "button";
 			counterButton.style.textAlign="center";
-			counterButton.style.width="100px";
-			counterButton.onclick = func;
+			counterButton.style.width="100px";			
+			counterButton.style.border= "2px inset #cccccc";
 			document.getElementById(bfield).appendChild(counterButton);
 			$('#' + bfield).append($('<p/>'));
 			
-			plusButton.onclick = function () 
-								{ 									
-									return (function (button)
-										{
-											if(habit.currTarget < habit.target)
-											{
-												habit.currTarget++;
-												button.value = habit.currTarget;
-											}											
-										})(counterButton)							
-								};
-								
-			var hab = document.getElementById(bfield);
-			  
+			//Add drag listeners
+			var hab = document.getElementById(bfield);			  
 			hab.addEventListener('dragstart', handleDragStart, false);
 			hab.addEventListener('dragenter', handleDragEnter, false);
 			hab.addEventListener('dragover', handleDragOver, false);
 			hab.addEventListener('dragleave', handleDragLeave, false);
 			hab.addEventListener('drop', handleDrop, false);
 			hab.addEventListener('dragend', handleDragEnd, false);			
-			}
+		}
 		
-		window.onload = function(){
-			var myHabits = [];
-			//{name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek }	
-			//{name, target, pDayWeek, currTarget, daysOfWeek, progress}
-			//daysOfWeek = [day, time]
-			//progress = [currTarget, target] //up to 60 cases
+		function createHabits(myHabits, habitInstances)		
+		{
+			var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 			
+					
+			var element = document.getElementById("Schedule");
+			while (element.firstChild) {
+			  element.removeChild(element.firstChild);				  
+			} 	
+			
+			
+			drawWeek(0);
+			for (var i = 0; i < myHabits.length; i++)
+			{
+				createHabit(myHabits[i], myHabits[i].daysOfWeek, i+1, habitInstances);																			
+			}			
+		}
+		
+		//Check if a date object is today
+		function isToday(date)
+		{
+			var todate = new Date();
+			
+			if (date.getDate() == todate.getDate() && date.getMonth() == todate.getMonth() && date.getYear() == todate.getYear())
+				return true;
+			else
+				return false;
+		}
+		//Define Weekly view (Sun->Sat)	
+		function drawWeek(currentWeek)
+		{
+			var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+			var weekList = getWeek(currentWeek);
+			
+			for(var i=0; i<7; i++)
+			{
+				if(isToday(weekList[i]))
+				{
+					$('#Schedule').append($('<div id=' + days[i] + ' class="day today"><header>' + days[i] + '<br/>' + weekList[i].getDate() + '/' + (weekList[i].getMonth()+1) + '</header></div>'));
+				}
+				else {
+					$('#Schedule').append($('<div id=' + days[i] + ' class="day"><header>' + days[i] + '<br/>' + weekList[i].getDate() + '/' + (weekList[i].getMonth()+1) + '</header></div>'));					
+				}
+			}
+			
+			var days = document.querySelectorAll('.day');
+			[].forEach.call(days, function(day) {
+			  day.addEventListener('dragenter', handleDragEnter, false);
+			  day.addEventListener('dragover', handleDragOver, false);
+			  day.addEventListener('dragleave', handleDragLeave, false);
+			  day.addEventListener('drop', handleDrop, false);
+			  day.addEventListener('dragend', handleDragEnd, false);
+			});		
+		}
+		window.onload = function(){
+			var myHabits = [];	
+			//{name, target, pDayWeek, daysOfWeek, progress}
+			var habitInstances = [];
+			//{name, dayOfWeek, currTarget}
+			
+			//daysOfWeek = [day, time]
+			//progress = [currTarget, target] //up to 60 cases?
+			
+			//Week definition
+			//currentWeek defines which week we are on. 0 represents present week, 1+ future and 1- past (used for scrolling)
+			var currentWeek = 0;
+				
+				drawWeek(currentWeek);
+				
 			//Define form
 			document.getElementById('addHabits').onclick = function () { return $( "#dialog-form" ).dialog( "open" ) };
-						
+			
+			document.getElementById('redrawHabits').onclick = function () { return createHabits(myHabits, habitInstances) };
 			var habit = $( "#habit" ), //Variables for the Create Habit dialog
-			  target = $( "#target" ),
+			  target = $( "#target" ),			  
 			  allFields = $( [] ).add( habit ).add( target ),
+			  day = document.getElementById("selectDay"),
 			  tips = $( ".validateTips" );
 			document.getElementById("chkWeek").checked = true;  
 			document.getElementById("chkDay").onclick = function () { 
@@ -209,24 +281,20 @@
 				  bValid = bValid && checkLength( target, "target", 1, 2 );
 				  
 				  bValid = bValid && checkRegexp( habit, /^[a-z]([0-9a-z_])+$/i, "Habit may consist of a-z, 0-9, underscores, begin with a letter." );
-				 
 				  if ( bValid ) {
 					var pWeek = document.getElementById("chkWeek").checked;
-					
-					//{name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek }	
-					//{name, currTarget, target, pDayWeek, , daysOfWeek, progress}
-				
-					//myHabits.push({name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek });	
-					myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), pDayWeek : pWeek, daysOfWeek : {Monday : 0,
+
+					/*myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), pDayWeek : pWeek, daysOfWeek : {Monday : 0,
 																															 Tuesday : 0,
 																															Wednesday : 0,
 																															Thursday : 0,
 																															Friday : 0,
 																															Saturday : 0,
-																															Sunday : 0},
-																															progress : void(0)});
-																																
-					createHabit(myHabits[myHabits.length-1], myHabits.length, null);
+																															Sunday : 0},	*/
+					
+					myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), pDayWeek : pWeek, daysOfWeek : getDayValue(parseInt(day.value)), progress : void(0)});
+					
+					createHabit(myHabits[myHabits.length-1], myHabits[myHabits.length-1].daysOfWeek, myHabits.length);
 					$( this ).dialog( "close" );
 				  }
 				},
@@ -239,18 +307,49 @@
 			  }
 			});	
 			
-			//Weekly
-			var days = document.querySelectorAll('.day');
-			[].forEach.call(days, function(day) {
-			  day.addEventListener('dragenter', handleDragEnter, false);
-			  day.addEventListener('dragover', handleDragOver, false);
-			  day.addEventListener('dragleave', handleDragLeave, false);
-			  day.addEventListener('drop', handleDrop, false);
-			  day.addEventListener('dragend', handleDragEnd, false);
-			});
-			  
+				
+		}			
 
+	
+	function getWeek(numWeeks)
+	{		
+		var list = [];
+		var date = new Date();
+		
+		var numDays = (numWeeks * 7) + date.getDate() - date.getDay(); //It will be the Monday numWeeks in advance of the current date
+		
+		for (var i = 0; i < 7; i++)
+		{				
+			var newDate = new Date();
+			newDate.setDate(numDays + i);
+			list[i] = newDate;
 		}		
+		
+		return list;
+	}	
+
+	function getDayValue (selectedDay) {
+		/*switch (selectedDay)
+		{
+			case 0:	return {Monday : 1, Tuesday : 0, Wednesday : 0, Thursday : 0, Friday : 0, Saturday : 0, Sunday : 0};
+			case 1: return {Monday : 0, Tuesday : 1, Wednesday : 0, Thursday : 0, Friday : 0, Saturday : 0, Sunday : 0};
+			case 2: return {Monday : 0, Tuesday : 0, Wednesday : 1, Thursday : 0, Friday : 0, Saturday : 0, Sunday : 0};
+			case 3: return {Monday : 0, Tuesday : 0, Wednesday : 0, Thursday : 1, Friday : 0, Saturday : 0, Sunday : 0};
+			case 4: return {Monday : 0, Tuesday : 0, Wednesday : 0, Thursday : 0, Friday : 1, Saturday : 0, Sunday : 0};
+			case 5: return {Monday : 0, Tuesday : 0, Wednesday : 0, Thursday : 0, Friday : 0, Saturday : 1, Sunday : 0};
+			case 6: return {Monday : 0, Tuesday : 0, Wednesday : 0, Thursday : 0, Friday : 0, Saturday : 0, Sunday : 1};
+			}*/
+		switch (selectedDay)
+		{
+			case 0:	return "Monday";
+			case 1: return "Tuesday";
+			case 2: return "Wednesday";
+			case 3: return "Thursday";
+			case 4: return "Friday";
+			case 5: return "Saturday";
+			case 6: return "Sunday";
+		}										
+	}
 	
     function updateTips( t ) {
       tips
@@ -260,6 +359,7 @@
         tips.removeClass( "ui-state-highlight", 1500 );
       }, 500 );
     } 
+	
     function checkLength( o, n, min, max ) {
       if ( o.val().length > max || o.val().length < min ) {
         o.addClass( "ui-state-error" );
@@ -270,6 +370,7 @@
         return true;
       }
     } 
+	
     function checkRegexp( o, regexp, n ) {
       if ( !( regexp.test( o.val() ) ) ) {
         o.addClass( "ui-state-error" );

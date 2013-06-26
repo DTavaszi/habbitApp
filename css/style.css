@@ -1,7 +1,7 @@
 body {
 	color:#EAEAEA;
 	background:#7EB5D6;	
-	margin:0px;
+	margin:10px;
 	padding:0px;
 	font-family: "Trebuchet MS", Tahoma, Arial;
 	font-size: 12px;
@@ -34,6 +34,9 @@ body {
 	text-align: center;
 	cursor: move;
 }
+.day.today {
+	background:#777777;
+}
 .day.over {
   border: 2px dashed #000;
 }
@@ -44,13 +47,14 @@ body {
   text-align:center;
   box-shadow: 5px;
   padding: 5px;
-  background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  /*background: -moz-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
   background: -webkit-gradient(linear, left top, right top,
                                color-stop(0, rgb(0,0,0)),
                                color-stop(0.50, rgb(79,79,79)),
                                color-stop(1, rgb(21,21,21)));
   background: -webkit-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
-  background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));
+  background: -ms-linear-gradient(left center, rgb(0,0,0), rgb(79,79,79), rgb(21,21,21));*/
+  background: #333333;
   border-bottom: 1px solid #ddd;
   -webkit-border-top-left-radius: 10px;
   -moz-border-radius-topleft: 10px;
@@ -81,7 +85,10 @@ body {
 	border: 1px solid black; 
 	position: relative; 
 	cursor: move;
-	width: 130px;
+	/*width: 130px;*/
+	font-size: 15px;
+	color: black;
+	font: arial;
 	
 	border: .5px solid #666666;
 	background-color: #ccc;
