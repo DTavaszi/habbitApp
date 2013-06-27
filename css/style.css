@@ -105,7 +105,7 @@ body {
 .drag.over {
   border: 2px dashed #000;
 }
-.container {
+.menu {
 	background:#AAAAAA;	
 	margin:10px auto;
 	}
