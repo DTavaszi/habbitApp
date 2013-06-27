@@ -29,14 +29,13 @@
 		  <p class="validateTips">All form fields are required.</p>		  
 		  <form>
 		  <fieldset>
-			<label for="habit">Name your habit:</label>
+			<label for="habit">Name habit: </label>
 			<input type="text" name="habit" id="habit" class="text ui-widget-content ui-corner-all" />
+			
 			<label for="target"></label>
 			<label for="target">Target goal:</label>
 			<input type="text" name="target" id="target" class="text ui-widget-content ui-corner-all" />	
-			<br/>
-			
-			<select id="selectDay">
+			<!--<select id="selectDay">
 			  <option value="0">Monday</option>
 			  <option value="1">Tuesday</option>
 			  <option value="2">Wednesday</option>
@@ -44,11 +43,17 @@
 			  <option value="4">Friday</option>
 			  <option value="5">Saturday</option>
 			  <option value="6">Sunday</option>
-			</select>	
-			
-			<input type="checkbox" name="chkWeek" id="chkWeek"> Per Week
-			<input type="checkbox" name="chkDay" id="chkDay"> Per day
-			
+			</select>	-->
+			<!--Defines the day options-->
+			<label>Repeats:</label>
+			<br/>
+			<input type="checkbox" id="chksun"> S	
+			<input type="checkbox" id="chkmon"> M
+			<input type="checkbox" id="chktue"> T			
+			<input type="checkbox" id="chkwed"> W
+			<input type="checkbox" id="chkthu"> T
+			<input type="checkbox" id="chkfri"> F
+			<input type="checkbox" id="chksat"> S
 		  </fieldset>
 		  </form>
 		</div>
@@ -121,19 +126,28 @@
 		  }
 		  return false;
 		}
+		//DNDHTML5/>
 		
-		//{name : habit.val(), counter : 0, target : target.val(), perWeek : pWeek }
-		//{name, target, pDayWeek, currTarget, daysOfWeek, progress}		
-
-//DNDHTML5
 		function createInstance(habit, habitDay, habitInstances)
 		{
 			
 		}
 		
 		function createHabit(habit, day, habitNumber, habitInstances)
+		{
+			var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+			for (var i=0;i<day.length;i++)
+			{
+				if(day[i])
+				{
+					ch(habit, days[i], habitNumber, habitInstances);					
+				}
+			}
+		}
+		function ch(habit, day, habitNumber, habitInstances)
 		{			
-			var bfield = 'bfield' + habitNumber;
+			alert(day);
+			var bfield = 'bfield' + habitNumber + day;
 			$('#' + day).append($('<div id=' + bfield + ' class="drag" draggable="true">'));
 			
 			var habitButton = document.createElement("label");
@@ -180,7 +194,7 @@
 			hab.addEventListener('dragend', handleDragEnd, false);			
 		}
 		
-		function createHabits(myHabits, habitInstances)		
+		function drawHabits(myHabits, habitInstances)		
 		{
 			var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 			
@@ -252,19 +266,12 @@
 			//Define form
 			document.getElementById('addHabits').onclick = function () { return $( "#dialog-form" ).dialog( "open" ) };
 			
-			document.getElementById('redrawHabits').onclick = function () { return createHabits(myHabits, habitInstances) };
+			document.getElementById('redrawHabits').onclick = function () { return drawHabits(myHabits, habitInstances) };
 			var habit = $( "#habit" ), //Variables for the Create Habit dialog
 			  target = $( "#target" ),			  
 			  allFields = $( [] ).add( habit ).add( target ),
 			  day = document.getElementById("selectDay"),
 			  tips = $( ".validateTips" );
-			document.getElementById("chkWeek").checked = true;  
-			document.getElementById("chkDay").onclick = function () { 
-																		document.getElementById("chkWeek").checked = false;
-																		};
-			document.getElementById("chkWeek").onclick = function () { 
-																		document.getElementById("chkDay").checked = false;
-																		};
 																		
 			$( "#dialog-form" ).dialog({
 			  autoOpen: false,
@@ -272,7 +279,7 @@
 			  width: 350,
 			  modal: true,
 			  buttons: {
-				"Create an account": function() {
+				"Form habit": function() {
 				
 				  var bValid = true;
 				  
@@ -282,17 +289,18 @@
 				  
 				  bValid = bValid && checkRegexp( habit, /^[a-z]([0-9a-z_])+$/i, "Habit may consist of a-z, 0-9, underscores, begin with a letter." );
 				  if ( bValid ) {
-					var pWeek = document.getElementById("chkWeek").checked;
-
-					/*myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), pDayWeek : pWeek, daysOfWeek : {Monday : 0,
-																															 Tuesday : 0,
-																															Wednesday : 0,
-																															Thursday : 0,
-																															Friday : 0,
-																															Saturday : 0,
-																															Sunday : 0},	*/
 					
-					myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), pDayWeek : pWeek, daysOfWeek : getDayValue(parseInt(day.value)), progress : void(0)});
+					document.getElementById("chksun").checked = true;  
+				
+					
+					myHabits.push({name : habit.val(), currTarget : 0, target : target.val(), daysOfWeek : [document.getElementById("chksun").checked,
+																											document.getElementById("chkmon").checked,
+																											document.getElementById("chktue").checked,
+																											document.getElementById("chkwed").checked,
+																											document.getElementById("chkthu").checked,
+																											document.getElementById("chkfri").checked,
+																											document.getElementById("chksat").checked],
+																									progress : void(0)});
 					
 					createHabit(myHabits[myHabits.length-1], myHabits[myHabits.length-1].daysOfWeek, myHabits.length);
 					$( this ).dialog( "close" );
